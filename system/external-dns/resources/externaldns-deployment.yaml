@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-dns
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: external-dns
+  template:
+    metadata:
+      labels:
+        app: external-dns
+    spec:
+      containers:
+      - name: external-dns
+        securityContext:
+          privileged: true
+        image: registry.k8s.io/external-dns/external-dns:v0.13.6
+        args:
+        - --log-level=debug
+        # - --source=service
+        - --source=ingress
+        # - --source=contour-httpproxy
+        - --domain-filter=cedille.club
+        - --provider=cloudflare
+        - --events
+        # - --cloudflare-dns-records-per-page=5000
+        envFrom:
+        - secretRef:
+          name: cloudflare-secret
