@@ -1,0 +1,1 @@
+# Go see the tutorial on the github template for Hugo
